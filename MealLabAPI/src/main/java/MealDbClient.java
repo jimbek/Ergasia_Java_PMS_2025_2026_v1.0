@@ -88,6 +88,38 @@ public class MealDbClient {
 		return new MealDbResults();
 	}
 	
+	public MealDbResults getRandomRecipe() {
+		StringBuilder uriBuilder = getMealDbURI("random", null);
+		
+		try {
+			URI uri = new URI(uriBuilder.toString());
+			URL url = uri.toURL();
+			
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("accept", "application/json");
+			
+			InputStream responseStream = connection.getInputStream();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			@SuppressWarnings("unchecked")
+			MealDbResults results = mapper.readValue(responseStream, MealDbResults.class);
+			
+			return results;
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new MealDbResults();
+	}
+	
 	private StringBuilder getMealDbURI(String apiCall, String i) {
 		StringBuilder uriBuilder = new StringBuilder(DOMAIN);
 		
@@ -97,8 +129,12 @@ public class MealDbClient {
 		uriBuilder.append(apiKey);
 		uriBuilder.append("/");
 		uriBuilder.append(apiCall);
-		uriBuilder.append(".php?i=");
-		uriBuilder.append(i);
+		uriBuilder.append(".php");
+		
+		if (i != null) {
+			uriBuilder.append("?i=");
+			uriBuilder.append(i);
+		}
 		
 		return uriBuilder;
 	}

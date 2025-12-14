@@ -25,5 +25,17 @@ public class Main {
         if (meal != null) {
         	System.out.println("Instructions: " + meal.getStrInstructions() + ", Ingredient 1: " + meal.getStrIngredient1() + ", Measure 1: " + meal.getStrMeasure1());
         }
+        
+        
+        System.out.println(">>>");
+        
+        
+        MealDbResults randomResults = client.getRandomRecipe();
+        
+        Meal randomMeal = randomResults.getMeals() != null ? randomResults.getMeals()[0] : null;
+        
+        if (randomMeal != null) {
+        	System.out.println("Instructions: " + randomMeal.getStrInstructions() + ", Ingredient 1: " + randomMeal.getStrIngredient1() + ", Measure 1: " + randomMeal.getStrMeasure1());
+        }
     }
 }
