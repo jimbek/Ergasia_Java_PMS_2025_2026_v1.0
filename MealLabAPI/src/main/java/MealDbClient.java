@@ -26,13 +26,7 @@ public class MealDbClient {
 		StringBuilder uriBuilder = getMealDbURI("filter", ingredient);
 		
 		try {
-			URI uri = new URI(uriBuilder.toString());
-			URL url = uri.toURL();
-			
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty("accept", "application/json");
-			
-			InputStream responseStream = connection.getInputStream();
+			InputStream responseStream = this.getInputStream(uriBuilder);
 			
 			ObjectMapper mapper = new ObjectMapper();
 			
@@ -60,13 +54,7 @@ public class MealDbClient {
 		StringBuilder uriBuilder = getMealDbURI("lookup", idMeal);
 		
 		try {
-			URI uri = new URI(uriBuilder.toString());
-			URL url = uri.toURL();
-			
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty("accept", "application/json");
-			
-			InputStream responseStream = connection.getInputStream();
+			InputStream responseStream = this.getInputStream(uriBuilder);
 			
 			ObjectMapper mapper = new ObjectMapper();
 			
@@ -92,13 +80,7 @@ public class MealDbClient {
 		StringBuilder uriBuilder = getMealDbURI("random", null);
 		
 		try {
-			URI uri = new URI(uriBuilder.toString());
-			URL url = uri.toURL();
-			
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty("accept", "application/json");
-			
-			InputStream responseStream = connection.getInputStream();
+			InputStream responseStream = this.getInputStream(uriBuilder);
 			
 			ObjectMapper mapper = new ObjectMapper();
 			
@@ -137,6 +119,16 @@ public class MealDbClient {
 		}
 		
 		return uriBuilder;
+	}
+	
+	private InputStream getInputStream(StringBuilder uriBuilder) throws URISyntaxException, IOException {
+		URI uri = new URI(uriBuilder.toString());
+		URL url = uri.toURL();
+		
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestProperty("accept", "application/json");
+		
+		return connection.getInputStream();
 	}
 	
 }
