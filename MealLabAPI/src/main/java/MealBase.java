@@ -1,8 +1,8 @@
 public class MealBase {
 
-	private String idMeal;
-	private String strMeal;
-	private String strMealThumb;
+	protected String idMeal;
+	protected String strMeal;
+	protected String strMealThumb;
 	
 	public MealBase() { }
 	

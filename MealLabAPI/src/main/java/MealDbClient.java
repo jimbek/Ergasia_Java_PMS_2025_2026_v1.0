@@ -20,20 +20,13 @@ public class MealDbClient {
 		this.apiKey = apiKey;
 	}
 	
-	public MealBaseResults search(String ingredient) {
+	public MealBaseDbResults search(String ingredient) {
 		// We define the Meal DB search URL.
 		// Example: https://www.themealdb.com/api/json/v1/1/filter.php?i=tomato
-		StringBuilder urlBuilder = new StringBuilder(DOMAIN);
-		
-		urlBuilder.append("/api/json/");
-		urlBuilder.append(version);
-		urlBuilder.append("/");
-		urlBuilder.append(apiKey);
-		urlBuilder.append("/filter.php?i=");
-		urlBuilder.append(ingredient);
+		StringBuilder uriBuilder = getMealDbURI("filter", ingredient);
 		
 		try {
-			URI uri = new URI(urlBuilder.toString());
+			URI uri = new URI(uriBuilder.toString());
 			URL url = uri.toURL();
 			
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -42,7 +35,9 @@ public class MealDbClient {
 			InputStream responseStream = connection.getInputStream();
 			
 			ObjectMapper mapper = new ObjectMapper();
-			MealBaseResults results = mapper.readValue(responseStream, MealBaseResults.class);
+			
+			@SuppressWarnings("unchecked")
+			MealBaseDbResults results = mapper.readValue(responseStream, MealBaseDbResults.class);
 			
 			return results;
 		} catch (URISyntaxException e) {
@@ -56,7 +51,56 @@ public class MealDbClient {
 			e.printStackTrace();
 		}
 		
-		return new MealBaseResults();
+		return new MealBaseDbResults();
+	}
+	
+	public MealDbResults getRecipe(String idMeal) {
+		// We define the Meal DB look-up URL.
+		// Example: https://www.themealdb.com/api/json/v1/1/lookup.php?i=53284
+		StringBuilder uriBuilder = getMealDbURI("lookup", idMeal);
+		
+		try {
+			URI uri = new URI(uriBuilder.toString());
+			URL url = uri.toURL();
+			
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("accept", "application/json");
+			
+			InputStream responseStream = connection.getInputStream();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			@SuppressWarnings("unchecked")
+			MealDbResults results = mapper.readValue(responseStream, MealDbResults.class);
+			
+			return results;
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new MealDbResults();
+	}
+	
+	private StringBuilder getMealDbURI(String apiCall, String i) {
+		StringBuilder uriBuilder = new StringBuilder(DOMAIN);
+		
+		uriBuilder.append("/api/json/");
+		uriBuilder.append(version);
+		uriBuilder.append("/");
+		uriBuilder.append(apiKey);
+		uriBuilder.append("/");
+		uriBuilder.append(apiCall);
+		uriBuilder.append(".php?i=");
+		uriBuilder.append(i);
+		
+		return uriBuilder;
 	}
 	
 }

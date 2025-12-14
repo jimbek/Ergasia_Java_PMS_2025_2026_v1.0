@@ -1,12 +1,12 @@
-public class MealBaseResults {
+public class MealBaseDbResults {
 
 	private MealBase[] meals;
 	
-	public MealBaseResults() {
+	public MealBaseDbResults() {
 		this(null);
 	}
 
-	public MealBaseResults(MealBase[] meals) {
+	public MealBaseDbResults(MealBase[] meals) {
 		this.meals = meals;
 	}
 
