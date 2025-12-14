@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MealDbClient {
 	
-	private static String DOMAIN = "https://www.themealdb.com";
+	private static final String DOMAIN = "https://www.themealdb.com";
 
 	private String version;
 	private String apiKey;
@@ -30,7 +30,6 @@ public class MealDbClient {
 			
 			ObjectMapper mapper = new ObjectMapper();
 			
-			@SuppressWarnings("unchecked")
 			MealBaseDbResults results = mapper.readValue(responseStream, MealBaseDbResults.class);
 			
 			return results;
@@ -58,7 +57,6 @@ public class MealDbClient {
 			
 			ObjectMapper mapper = new ObjectMapper();
 			
-			@SuppressWarnings("unchecked")
 			MealDbResults results = mapper.readValue(responseStream, MealDbResults.class);
 			
 			return results;
@@ -84,7 +82,6 @@ public class MealDbClient {
 			
 			ObjectMapper mapper = new ObjectMapper();
 			
-			@SuppressWarnings("unchecked")
 			MealDbResults results = mapper.readValue(responseStream, MealDbResults.class);
 			
 			return results;
