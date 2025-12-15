@@ -13,6 +13,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MealDbClient {
 	
+	private static class JsonResponse<T> {
+		
+		private T[] meals;
+
+		public T[] getMeals() {
+			return meals;
+		}
+		
+	}
+	
 	private static final String DOMAIN = "https://www.themealdb.com";
 
 	private String version;
