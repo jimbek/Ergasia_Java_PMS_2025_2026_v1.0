@@ -72,12 +72,7 @@ public class MealDbClient {
 	 * @return array of {@link MealBase}
 	 */
 	public MealBase[] search(String ingredient) {
-		ObjectMapper mapper = getMapper();
-		
-		JavaType javaType = getJavaType(mapper, MealBase.class);
-		
-		JsonResponse<Meal> results = fetchResults("filter", ingredient, mapper, javaType);
-		
+		JsonResponse<MealBase> results = fetchResults("filter", ingredient, MealBase.class);
 		return results.getMeals() != null ? results.getMeals() : new Meal[0];
 	}
 	
@@ -87,12 +82,7 @@ public class MealDbClient {
 	 * @return instance of {@link Meal}
 	 */
 	public Meal getRecipe(String idMeal) {
-		ObjectMapper mapper = getMapper();
-		
-		JavaType javaType = getJavaType(mapper, Meal.class);
-		
-		JsonResponse<Meal> results = fetchResults("lookup", idMeal, mapper, javaType);
-		
+		JsonResponse<Meal> results = fetchResults("lookup", idMeal, Meal.class);
 		return results.getMeals() != null ? results.getMeals()[0] : null;
 	}
 	
@@ -101,36 +91,8 @@ public class MealDbClient {
 	 * @return instance of {@link Meal}
 	 */
 	public Meal getRandomRecipe() {
-		ObjectMapper mapper = getMapper();
-		
-		JavaType javaType = getJavaType(mapper, Meal.class);
-		
-		JsonResponse<Meal> results = fetchResults("random", null, mapper, javaType);
-		
+		JsonResponse<Meal> results = fetchResults("random", null, Meal.class);
 		return results.getMeals() != null ? results.getMeals()[0] : null;
-	}
-	
-	/**
-	 * Returns a new instance of {@link ObjectMapper} that ignores unknown properties.
-	 * @return instance of {@link ObjectMapper}
-	 */
-	private ObjectMapper getMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		return mapper;
-	}
-	
-	/**
-	 * Returns a new instance of {@link JavaType} in order to map <a href="https://www.themealdb.com">TheMealDB API</a>'s data with {@link MealBase} or {@link Meal}.
-	 * @param <X> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
-	 * @param mapper instance of {@link ObjectMapper}
-	 * @param x instance of <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
-	 * @return instance of {@link JavaType}
-	 */
-	private <X> JavaType getJavaType(ObjectMapper mapper, Class<X> x) {
-		return mapper
-				.getTypeFactory()
-				.constructParametricType(JsonResponse.class, x);
 	}
 	
 	/**
@@ -182,6 +144,29 @@ public class MealDbClient {
 	}
 	
 	/**
+	 * Returns a new instance of {@link ObjectMapper} that ignores unknown properties.
+	 * @return instance of {@link ObjectMapper}
+	 */
+	private ObjectMapper getMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		return mapper;
+	}
+	
+	/**
+	 * Returns a new instance of {@link JavaType} in order to map <a href="https://www.themealdb.com">TheMealDB API</a>'s data with {@link MealBase} or {@link Meal}.
+	 * @param <X> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
+	 * @param mapper instance of {@link ObjectMapper}
+	 * @param x instance of <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
+	 * @return instance of {@link JavaType}
+	 */
+	private <X> JavaType getJavaType(ObjectMapper mapper, Class<X> x) {
+		return mapper
+				.getTypeFactory()
+				.constructParametricType(JsonResponse.class, x);
+	}
+	
+	/**
 	 * Returns a new instance of {@link JsonResponse} binding the data collected from <a href="https://www.themealdb.com">TheMealDB API</a>.
 	 * @param <T> type of the fetched data
 	 * @param responseStream data as {@link InputStream}
@@ -211,18 +196,21 @@ public class MealDbClient {
 	
 	/**
 	 * Deserializes  the data from <a href="https://www.themealdb.com">TheMealDB API</a>.
-	 * @param <T>
+	 * @param <T> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
 	 * @param apiCall <code>filter</code>, <code>lookup</code> or <code>random</code>
 	 * @param i search field, set to <code>null</code> if an HTTP call does not expect it
-	 * @param mapper instance of {@link ObjectMapper}
-	 * @param javaType instance of {@link JavaType} to define the POJO class
-	 * @return an instance of {@link JsonResponse}
+	 * @param t instance of <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
+	 * @return an instance of {@link JsonResponse}<{@link MealBase}> or {@link JsonResponse}<{@link Meal}>
 	 */
-	private <T> JsonResponse<T> fetchResults(String apiCall, String i, ObjectMapper mapper, JavaType javaType) {
+	private <T> JsonResponse<T> fetchResults(String apiCall, String i, Class<T> t) {
 		String uriAsString = getMealDbURI(apiCall, i);
 		
 		try {
 			InputStream responseStream = getInputStream(uriAsString);
+			
+			ObjectMapper mapper = getMapper();
+			
+			JavaType javaType = getJavaType(mapper, t);
 			
 			JsonResponse<T> results = readResults(responseStream, mapper, javaType);
 			
