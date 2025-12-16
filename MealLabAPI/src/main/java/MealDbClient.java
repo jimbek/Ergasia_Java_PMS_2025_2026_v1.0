@@ -87,8 +87,6 @@ public class MealDbClient {
 	 * @return instance of {@link Meal}
 	 */
 	public Meal getRecipe(String idMeal) {
-		// We define the Meal DB look-up URL.
-		// Example: https://www.themealdb.com/api/json/v1/1/lookup.php?i=53284
 		ObjectMapper mapper = getMapper();
 		
 		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, Meal.class);
@@ -103,8 +101,6 @@ public class MealDbClient {
 	 * @return instance of {@link Meal}
 	 */
 	public Meal getRandomRecipe() {
-		// We define the Meal DB look-up URL.
-		// https://www.themealdb.com/api/json/v1/1/random.php
 		ObjectMapper mapper = getMapper();
 		
 		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, Meal.class);
