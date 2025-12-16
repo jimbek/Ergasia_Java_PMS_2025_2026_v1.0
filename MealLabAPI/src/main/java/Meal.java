@@ -1,3 +1,7 @@
+/**
+ * Meal extends the {@link MealBase} class
+ * and represents a meal with much more details.
+ */
 public class Meal extends MealBase {
 	
 	private String strInstructions;
