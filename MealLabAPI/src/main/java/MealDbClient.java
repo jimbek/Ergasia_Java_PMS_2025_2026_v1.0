@@ -74,7 +74,7 @@ public class MealDbClient {
 	public MealBase[] search(String ingredient) {
 		ObjectMapper mapper = getMapper();
 		
-		JavaType javaType = getJavaType(mapper, JsonResponse.class, MealBase.class);
+		JavaType javaType = getJavaType(mapper, MealBase.class);
 		
 		JsonResponse<Meal> results = fetchResults("filter", ingredient, mapper, javaType);
 		
@@ -89,7 +89,7 @@ public class MealDbClient {
 	public Meal getRecipe(String idMeal) {
 		ObjectMapper mapper = getMapper();
 		
-		JavaType javaType = getJavaType(mapper, JsonResponse.class, Meal.class);
+		JavaType javaType = getJavaType(mapper, Meal.class);
 		
 		JsonResponse<Meal> results = fetchResults("lookup", idMeal, mapper, javaType);
 		
@@ -103,7 +103,7 @@ public class MealDbClient {
 	public Meal getRandomRecipe() {
 		ObjectMapper mapper = getMapper();
 		
-		JavaType javaType = getJavaType(mapper, JsonResponse.class, Meal.class);
+		JavaType javaType = getJavaType(mapper, Meal.class);
 		
 		JsonResponse<Meal> results = fetchResults("random", null, mapper, javaType);
 		
@@ -121,18 +121,16 @@ public class MealDbClient {
 	}
 	
 	/**
-	 * Returns a new instance of {@link JavaType}.
+	 * Returns a new instance of {@link JavaType} in order to map <a href="https://www.themealdb.com">TheMealDB API</a>'s data with {@link MealBase} or {@link Meal}.
 	 * @param <X> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
-	 * @param <Y> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
 	 * @param mapper instance of {@link ObjectMapper}
-	 * @param x <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
-	 * @param y <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
+	 * @param x instance of <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
 	 * @return instance of {@link JavaType}
 	 */
-	private <X, Y> JavaType getJavaType(ObjectMapper mapper, Class<X> x, Class<Y> y) {
+	private <X> JavaType getJavaType(ObjectMapper mapper, Class<X> x) {
 		return mapper
 				.getTypeFactory()
-				.constructParametricType(x, y);
+				.constructParametricType(JsonResponse.class, x);
 	}
 	
 	/**
