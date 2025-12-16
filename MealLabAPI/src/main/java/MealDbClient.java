@@ -73,7 +73,7 @@ public class MealDbClient {
 	 */
 	public MealBase[] search(String ingredient) {
 		JsonResponse<MealBase> results = fetchResults("filter", ingredient, MealBase.class);
-		return results.getMeals() != null ? results.getMeals() : new Meal[0];
+		return results != null && results.getMeals() != null ? results.getMeals() : new Meal[0];
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class MealDbClient {
 	 */
 	public Meal getRecipe(String idMeal) {
 		JsonResponse<Meal> results = fetchResults("lookup", idMeal, Meal.class);
-		return results.getMeals() != null ? results.getMeals()[0] : null;
+		return results != null && results.getMeals() != null ? results.getMeals()[0] : null;
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class MealDbClient {
 	 */
 	public Meal getRandomRecipe() {
 		JsonResponse<Meal> results = fetchResults("random", null, Meal.class);
-		return results.getMeals() != null ? results.getMeals()[0] : null;
+		return results != null && results.getMeals() != null ? results.getMeals()[0] : null;
 	}
 	
 	/**
