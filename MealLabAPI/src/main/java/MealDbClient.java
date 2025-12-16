@@ -68,7 +68,7 @@ public class MealDbClient {
 	
 	/**
 	 * Returns an array of {@link MealBase}.
-	 * @param ingredient examples <code>tomato</code>, <code>potato</code> etc
+	 * @param ingredient examples <code>tomato</code>, <code>rice</code> etc
 	 * @return array of {@link MealBase}
 	 */
 	public MealBase[] search(String ingredient) {
