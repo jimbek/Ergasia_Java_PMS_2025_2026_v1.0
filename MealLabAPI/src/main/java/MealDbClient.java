@@ -78,7 +78,7 @@ public class MealDbClient {
 		
 		JsonResponse<Meal> results = this.fetchResults("filter", ingredient, mapper, javaType);
 		
-		return results != null ? results.getMeals() : new Meal[0];
+		return results.getMeals() != null ? results.getMeals() : new Meal[0];
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class MealDbClient {
 		
 		JsonResponse<Meal> results = this.fetchResults("lookup", idMeal, mapper, javaType);
 		
-		return results != null ? results.getMeals()[0] : null;
+		return results.getMeals() != null ? results.getMeals()[0] : null;
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class MealDbClient {
 		
 		JsonResponse<Meal> results = this.fetchResults("random", null, mapper, javaType);
 		
-		return results != null ? results.getMeals()[0] : null;
+		return results.getMeals() != null ? results.getMeals()[0] : null;
 	}
 	
 	/**
