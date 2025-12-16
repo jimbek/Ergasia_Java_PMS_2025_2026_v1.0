@@ -74,9 +74,9 @@ public class MealDbClient {
 	public MealBase[] search(String ingredient) {
 		ObjectMapper mapper = getMapper();
 		
-		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, MealBase.class);
+		JavaType javaType = getJavaType(mapper, JsonResponse.class, MealBase.class);
 		
-		JsonResponse<Meal> results = this.fetchResults("filter", ingredient, mapper, javaType);
+		JsonResponse<Meal> results = fetchResults("filter", ingredient, mapper, javaType);
 		
 		return results.getMeals() != null ? results.getMeals() : new Meal[0];
 	}
@@ -89,9 +89,9 @@ public class MealDbClient {
 	public Meal getRecipe(String idMeal) {
 		ObjectMapper mapper = getMapper();
 		
-		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, Meal.class);
+		JavaType javaType = getJavaType(mapper, JsonResponse.class, Meal.class);
 		
-		JsonResponse<Meal> results = this.fetchResults("lookup", idMeal, mapper, javaType);
+		JsonResponse<Meal> results = fetchResults("lookup", idMeal, mapper, javaType);
 		
 		return results.getMeals() != null ? results.getMeals()[0] : null;
 	}
@@ -103,9 +103,9 @@ public class MealDbClient {
 	public Meal getRandomRecipe() {
 		ObjectMapper mapper = getMapper();
 		
-		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, Meal.class);
+		JavaType javaType = getJavaType(mapper, JsonResponse.class, Meal.class);
 		
-		JsonResponse<Meal> results = this.fetchResults("random", null, mapper, javaType);
+		JsonResponse<Meal> results = fetchResults("random", null, mapper, javaType);
 		
 		return results.getMeals() != null ? results.getMeals()[0] : null;
 	}
@@ -118,6 +118,21 @@ public class MealDbClient {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		return mapper;
+	}
+	
+	/**
+	 * Returns a new instance of {@link JavaType}.
+	 * @param <X> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
+	 * @param <Y> <code>{@link MealBase}</code> or <code>{@link Meal}</code>
+	 * @param mapper instance of {@link ObjectMapper}
+	 * @param x <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
+	 * @param y <code>Class<{@link MealBase}></code> or <code>Class<{@link Meal}></code>
+	 * @return instance of {@link JavaType}
+	 */
+	private <X, Y> JavaType getJavaType(ObjectMapper mapper, Class<X> x, Class<Y> y) {
+		return mapper
+				.getTypeFactory()
+				.constructParametricType(x, y);
 	}
 	
 	/**
@@ -209,9 +224,9 @@ public class MealDbClient {
 		String uriAsString = getMealDbURI(apiCall, i);
 		
 		try {
-			InputStream responseStream = this.getInputStream(uriAsString);
+			InputStream responseStream = getInputStream(uriAsString);
 			
-			JsonResponse<T> results = this.readResults(responseStream, mapper, javaType);
+			JsonResponse<T> results = readResults(responseStream, mapper, javaType);
 			
 			return results;
 		} catch (URISyntaxException e) {
