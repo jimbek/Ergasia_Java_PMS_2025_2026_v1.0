@@ -1,10 +1,15 @@
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -23,6 +28,8 @@ public class MealDbClient {
 		}
 		
 	}
+	
+	private static final Logger LOGGER = LogManager.getLogger(MealDbClient.class.getName());
 	
 	private static final String DOMAIN = "https://www.themealdb.com";
 
@@ -111,6 +118,12 @@ public class MealDbClient {
 		return results;
 	}
 	
+	private String getStackTrace(Exception e) {
+		StringWriter writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
+	}
+	
 	private <T> JsonResponse<T> fetchResults(String apiCall, String i, ObjectMapper mapper, JavaType javaType) {
 		StringBuilder uriBuilder = getMealDbURI(apiCall, i);
 		
@@ -121,14 +134,11 @@ public class MealDbClient {
 			
 			return results;
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("URISyntaxException with stack: {}", getStackTrace(e));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("MalformedURLException with stack: {}", getStackTrace(e));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("IOException with stack: {}", getStackTrace(e));
 		}
 		
 		return null;

@@ -44,9 +44,7 @@ public class Meal extends MealBase {
 	private String strMeasure19;
 	private String strMeasure20;
 	
-	public Meal() {
-		super();
-	}
+	public Meal() { }
 
 	public Meal(String idMeal, String strMeal, String strMealThumb, String strInstructions,
 			String strIngredient1, String strIngredient2, String strIngredient3,
@@ -433,6 +431,5 @@ public class Meal extends MealBase {
 	public void setStrMeasure20(String strMeasure20) {
 		this.strMeasure20 = strMeasure20;
 	}
-	
 	
 }
