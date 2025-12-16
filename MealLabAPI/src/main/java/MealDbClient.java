@@ -8,6 +8,7 @@ import java.net.URL;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,7 +37,7 @@ public class MealDbClient {
 	public MealBase[] search(String ingredient) {
 		// We define the Meal DB search URL.
 		// Example: https://www.themealdb.com/api/json/v1/1/filter.php?i=tomato
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = getMapper();
 		
 		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, MealBase.class);
 		
@@ -45,28 +46,34 @@ public class MealDbClient {
 		return results != null ? results.getMeals() : new Meal[0];
 	}
 	
-	public Meal[] getRecipe(String idMeal) {
+	public Meal getRecipe(String idMeal) {
 		// We define the Meal DB look-up URL.
 		// Example: https://www.themealdb.com/api/json/v1/1/lookup.php?i=53284
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = getMapper();
 		
 		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, Meal.class);
 		
 		JsonResponse<Meal> results = this.fetchResults("lookup", idMeal, mapper, javaType);
 		
-		return results != null ? results.getMeals() : new Meal[0];
+		return results != null ? results.getMeals()[0] : null;
 	}
 	
-	public Meal[] getRandomRecipe() {
+	public Meal getRandomRecipe() {
 		// We define the Meal DB look-up URL.
 		// https://www.themealdb.com/api/json/v1/1/random.php
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = getMapper();
 		
 		JavaType javaType = mapper.getTypeFactory().constructParametricType(JsonResponse.class, Meal.class);
 		
 		JsonResponse<Meal> results = this.fetchResults("random", null, mapper, javaType);
 		
-		return results != null ? results.getMeals() : new Meal[0];
+		return results != null ? results.getMeals()[0] : null;
+	}
+	
+	private ObjectMapper getMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		return mapper;
 	}
 	
 	private StringBuilder getMealDbURI(String apiCall, String i) {

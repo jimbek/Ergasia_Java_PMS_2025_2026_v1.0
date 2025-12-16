@@ -1,15 +1,5 @@
 public class Meal extends MealBase {
 	
-	private String strMealAlternate;
-	private String strTags;
-	private String strYoutube;
-	private String strSource;
-	private String strImageSource;
-	private String strCreativeCommonsConfirmed;
-	private String dateModified;
-
-	private String strCategory;
-	private String strArea;
 	private String strInstructions;
 	
 	private String strIngredient1;
@@ -58,10 +48,8 @@ public class Meal extends MealBase {
 		super();
 	}
 
-	public Meal(String idMeal, String strMeal, String strMealThumb,
-			String strMealAlternate, String strTags, String strYoutube, String strSource, String strImageSource,
-			String strCreativeCommonsConfirmed, String dateModified, String strCategory, String strArea,
-			String strInstructions, String strIngredient1, String strIngredient2, String strIngredient3,
+	public Meal(String idMeal, String strMeal, String strMealThumb, String strInstructions,
+			String strIngredient1, String strIngredient2, String strIngredient3,
 			String strIngredient4, String strIngredient5, String strIngredient6, String strIngredient7,
 			String strIngredient8, String strIngredient9, String strIngredient10, String strIngredient11,
 			String strIngredient12, String strIngredient13, String strIngredient14, String strIngredient15,
@@ -73,16 +61,6 @@ public class Meal extends MealBase {
 			String strMeasure20) {
 		super(idMeal, strMeal, strMealThumb);
 		
-		this.strMealAlternate = strMealAlternate;
-		this.strTags = strTags;
-		this.strYoutube = strYoutube;
-		this.strSource = strSource;
-		this.strImageSource = strImageSource;
-		this.strCreativeCommonsConfirmed = strCreativeCommonsConfirmed;
-		this.dateModified = dateModified;
-		
-		this.strCategory = strCategory;
-		this.strArea = strArea;
 		this.strInstructions = strInstructions;
 		
 		this.strIngredient1 = strIngredient1;
@@ -126,78 +104,6 @@ public class Meal extends MealBase {
 		this.strMeasure18 = strMeasure18;
 		this.strMeasure19 = strMeasure19;
 		this.strMeasure20 = strMeasure20;
-	}
-
-	public String getStrMealAlternate() {
-		return strMealAlternate;
-	}
-
-	public void setStrMealAlternate(String strMealAlternate) {
-		this.strMealAlternate = strMealAlternate;
-	}
-
-	public String getStrTags() {
-		return strTags;
-	}
-
-	public void setStrTags(String strTags) {
-		this.strTags = strTags;
-	}
-
-	public String getStrYoutube() {
-		return strYoutube;
-	}
-
-	public void setStrYoutube(String strYoutube) {
-		this.strYoutube = strYoutube;
-	}
-
-	public String getStrSource() {
-		return strSource;
-	}
-
-	public void setStrSource(String strSource) {
-		this.strSource = strSource;
-	}
-
-	public String getStrImageSource() {
-		return strImageSource;
-	}
-
-	public void setStrImageSource(String strImageSource) {
-		this.strImageSource = strImageSource;
-	}
-
-	public String getStrCreativeCommonsConfirmed() {
-		return strCreativeCommonsConfirmed;
-	}
-
-	public void setStrCreativeCommonsConfirmed(String strCreativeCommonsConfirmed) {
-		this.strCreativeCommonsConfirmed = strCreativeCommonsConfirmed;
-	}
-
-	public String getDateModified() {
-		return dateModified;
-	}
-
-	public void setDateModified(String dateModified) {
-		this.dateModified = dateModified;
-	}
-
-	public String getStrCategory() {
-		return strCategory;
-	}
-
-	public void setStrCategory(String strCategory) {
-		this.strCategory = strCategory;
-	}
-
-	public String getStrArea() {
-		return strArea;
-	}
-
-	public void setStrArea(String strArea) {
-		this.strArea = strArea;
 	}
 
 	public String getStrInstructions() {

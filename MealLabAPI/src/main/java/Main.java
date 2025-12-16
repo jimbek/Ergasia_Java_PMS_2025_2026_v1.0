@@ -17,20 +17,20 @@ public class Main {
         System.out.println(">>>");
         
         
-        Meal meal = client.getRecipe("53284") != null ? client.getRecipe("53284")[0] : null;
+        Meal meal = client.getRecipe("53284");
         
         if (meal != null) {
-        	System.out.println("Instructions: " + meal.getStrInstructions() + ", Ingredient 1: " + meal.getStrIngredient1() + ", Measure 1: " + meal.getStrMeasure1());
+        	System.out.println("Image: " + meal.getStrMealThumb() + ", Ingredient 1: " + meal.getStrIngredient1() + ", Measure 1: " + meal.getStrMeasure1());
         }
         
         
         System.out.println(">>>");
         
         
-        Meal randomMeal = client.getRandomRecipe() != null ? client.getRandomRecipe()[0] : null;
+        Meal randomMeal = client.getRandomRecipe();
         
         if (randomMeal != null) {
-        	System.out.println("Instructions: " + randomMeal.getStrInstructions() + ", Ingredient 1: " + randomMeal.getStrIngredient1() + ", Measure 1: " + randomMeal.getStrMeasure1());
+        	System.out.println("Image: " + randomMeal.getStrMealThumb() + ", Ingredient 1: " + randomMeal.getStrIngredient1() + ", Measure 1: " + randomMeal.getStrMeasure1());
         }
     }
     
