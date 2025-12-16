@@ -121,7 +121,7 @@ public class MealDbClient {
 	}
 	
 	/**
-	 * Returns a new instance of {@link StringBuilder} representing an HTTP call to <a href="https://www.themealdb.com">TheMealDB API</a>.
+	 * Returns a string representing an HTTP call to <a href="https://www.themealdb.com">TheMealDB API</a>.
 	 * Examples of HTTP calls:
 	 * <ul>
 	 * 	<li><a href="https://www.themealdb.com/api/json/v1/1/filter.php?i=tomato">Filter</a>
@@ -130,9 +130,9 @@ public class MealDbClient {
 	 * </ul>
 	 * @param apiCall <code>filter</code>, <code>lookup</code> or <code>random</code>
 	 * @param i search field, set to <code>null</code> if an HTTP call does not expect it
-	 * @return instance of {@link StringBuilder}
+	 * @return instance of {@link String}
 	 */
-	private StringBuilder getMealDbURI(String apiCall, String i) {
+	private String getMealDbURI(String apiCall, String i) {
 		StringBuilder uriBuilder = new StringBuilder(DOMAIN);
 		
 		uriBuilder.append("/api/json/");
@@ -148,18 +148,18 @@ public class MealDbClient {
 			uriBuilder.append(i);
 		}
 		
-		return uriBuilder;
+		return uriBuilder.toString();
 	}
 	
 	/**
 	 * Returns a new instance of {@link InputStream} with data from <a href="https://www.themealdb.com">TheMealDB API</a>.
-	 * @param uriBuilder instance of {@link StringBuilder} representing an HTTP call
+	 * @param uriAsString a string representing an HTTP call
 	 * @return instance of {@link InputStream}
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	private InputStream getInputStream(StringBuilder uriBuilder) throws URISyntaxException, IOException {
-		URI uri = new URI(uriBuilder.toString());
+	private InputStream getInputStream(String uriAsString) throws URISyntaxException, IOException {
+		URI uri = new URI(uriAsString);
 		URL url = uri.toURL();
 		
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -206,10 +206,10 @@ public class MealDbClient {
 	 * @return an instance of {@link JsonResponse}
 	 */
 	private <T> JsonResponse<T> fetchResults(String apiCall, String i, ObjectMapper mapper, JavaType javaType) {
-		StringBuilder uriBuilder = getMealDbURI(apiCall, i);
+		String uriAsString = getMealDbURI(apiCall, i);
 		
 		try {
-			InputStream responseStream = this.getInputStream(uriBuilder);
+			InputStream responseStream = this.getInputStream(uriAsString);
 			
 			JsonResponse<T> results = this.readResults(responseStream, mapper, javaType);
 			
