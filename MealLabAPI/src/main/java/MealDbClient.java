@@ -179,7 +179,6 @@ public class MealDbClient {
 	 */
 	private <T> JsonResponse<T> readResults(InputStream responseStream, ObjectMapper mapper, JavaType javaType) throws StreamReadException, DatabindException, IOException {
 		JsonResponse<T> results = mapper.readValue(responseStream, javaType);
-		
 		return results;
 	}
 	
@@ -208,7 +207,6 @@ public class MealDbClient {
 			InputStream responseStream = getInputStream(uriAsString);
 			
 			ObjectMapper mapper = getMapper();
-			
 			JavaType javaType = getJavaType(mapper, t);
 			
 			JsonResponse<T> results = readResults(responseStream, mapper, javaType);
