@@ -96,7 +96,7 @@ public class MealDbClient {
 	}
 	
 	/**
-	 * Returns a string representing an HTTP call to <a href="https://www.themealdb.com">TheMealDB API</a>.
+	 * Returns a new instance of {@link URL} representing an HTTP call to <a href="https://www.themealdb.com">TheMealDB API</a>.
 	 * Examples of HTTP calls:
 	 * <ul>
 	 * 	<li><a href="https://www.themealdb.com/api/json/v1/1/filter.php?i=tomato">Filter</a>
@@ -105,9 +105,11 @@ public class MealDbClient {
 	 * </ul>
 	 * @param apiCall <code>filter</code>, <code>lookup</code> or <code>random</code>
 	 * @param i search field, set to <code>null</code> if an HTTP call does not expect it
-	 * @return instance of {@link String}
+	 * @return instance of {@link URL}
+	 * @throws URISyntaxException
+	 * @throws MalformedURLException
 	 */
-	private String getMealDbURI(String apiCall, String i) {
+	private URL getMealDbURL(String apiCall, String i) throws URISyntaxException, MalformedURLException {
 		StringBuilder uriBuilder = new StringBuilder(DOMAIN);
 		
 		uriBuilder.append("/api/json/");
@@ -123,20 +125,18 @@ public class MealDbClient {
 			uriBuilder.append(i);
 		}
 		
-		return uriBuilder.toString();
+		URI uri = new URI(uriBuilder.toString());
+		
+		return uri.toURL();
 	}
 	
 	/**
 	 * Returns a new instance of {@link InputStream} with data from <a href="https://www.themealdb.com">TheMealDB API</a>.
-	 * @param uriAsString a string representing an HTTP call
+	 * @param url instance of {@link URL} representing an HTTP call
 	 * @return instance of {@link InputStream}
-	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	private InputStream getInputStream(String uriAsString) throws URISyntaxException, IOException {
-		URI uri = new URI(uriAsString);
-		URL url = uri.toURL();
-		
+	private InputStream getInputStream(URL url) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestProperty("accept", "application/json");
 		
@@ -203,9 +203,8 @@ public class MealDbClient {
 	 * @return an instance of {@link JsonResponse}<{@link MealBase}> or {@link JsonResponse}<{@link Meal}>
 	 */
 	private <T> JsonResponse<T> fetchResults(String apiCall, String i, Class<T> t) {
-		String uriAsString = getMealDbURI(apiCall, i);
-		
 		try {
+			URL uriAsString = getMealDbURL(apiCall, i);
 			InputStream responseStream = getInputStream(uriAsString);
 			
 			ObjectMapper mapper = getMapper();
