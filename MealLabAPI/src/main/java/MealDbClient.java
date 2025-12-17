@@ -178,8 +178,7 @@ public class MealDbClient {
 	 * @throws IOException
 	 */
 	private <T> JsonResponse<T> readResults(InputStream responseStream, ObjectMapper mapper, JavaType javaType) throws StreamReadException, DatabindException, IOException {
-		JsonResponse<T> results = mapper.readValue(responseStream, javaType);
-		return results;
+		return mapper.readValue(responseStream, javaType);
 	}
 	
 	/**
@@ -209,9 +208,7 @@ public class MealDbClient {
 			ObjectMapper mapper = getMapper();
 			JavaType javaType = getJavaType(mapper, t);
 			
-			JsonResponse<T> results = readResults(responseStream, mapper, javaType);
-			
-			return results;
+			return readResults(responseStream, mapper, javaType);
 		} catch (URISyntaxException e) {
 			LOGGER.error("URISyntaxException with stack: {}", getStackTrace(e));
 		} catch (MalformedURLException e) {
