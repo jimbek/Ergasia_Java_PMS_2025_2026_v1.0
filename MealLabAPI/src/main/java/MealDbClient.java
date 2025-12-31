@@ -1,3 +1,4 @@
+package unipi.meallab.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -73,7 +74,7 @@ public class MealDbClient {
 	 */
 	public MealBase[] search(String ingredient) {
 		JsonResponse<MealBase> results = fetchResults("filter", ingredient, MealBase.class);
-		return results != null && results.getMeals() != null ? results.getMeals() : new Meal[0];
+		return results != null && results.getMeals() != null ? results.getMeals() : new MealBase[0];
 	}
 	
 	/**
