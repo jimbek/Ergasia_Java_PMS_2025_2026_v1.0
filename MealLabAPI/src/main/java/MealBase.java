@@ -1,3 +1,4 @@
+package unipi.meallab.api;
 /**
  * MealBase is the base class that represents
  * the details of a meal from <a href="https://www.themealdb.com">TheMealDB API</a>.
@@ -38,6 +39,11 @@ public class MealBase {
 
 	public void setStrMealThumb(String strMealThumb) {
 		this.strMealThumb = strMealThumb;
+	}
+	
+	@Override
+	public String toString() {
+	    return strMeal;
 	}
 
 }
