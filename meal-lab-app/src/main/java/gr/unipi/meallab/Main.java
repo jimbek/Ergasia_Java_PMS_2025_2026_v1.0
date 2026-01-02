@@ -1,8 +1,7 @@
 package gr.unipi.meallab;
+
 import java.io.File;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,48 +14,65 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+// Classes from the MealLab API project
 import unipi.meallab.api.Meal;
 import unipi.meallab.api.MealBase;
 import unipi.meallab.api.MealDbClient;
 
 public class Main extends Application {
 
+    // API version and key used to access TheMealDB API
     private static final String API_VERSION = "v1";
     private static final String API_KEY = "1";
     
+    // List that stores favorite recipes
     private final ObservableList<MealBase> favorites = FXCollections.observableArrayList();
+    
+    // List that stores cooked recipes
     private final ObservableList<MealBase> cooked = FXCollections.observableArrayList();
-
 
     @Override
     public void start(Stage stage) {
 
-    	favorites.addAll(loadFavorites());
-    	cooked.addAll(loadCooked());
+        // Load saved favorites and cooked recipes from files
+        favorites.addAll(loadFavorites());
+        cooked.addAll(loadCooked());
     	
-    	TextField ingredientField = new TextField();
+        // Text field where the user types the ingredient
+        TextField ingredientField = new TextField();
         ingredientField.setPromptText("Write a cooking material (example: chicken)");
 
+        // Button for searching recipes
         Button searchButton = new Button("Search");
 
+        // List that shows search results
         ListView<MealBase> resultsList = new ListView<>();
         resultsList.setPrefHeight(220);
+
+        // Label used to show messages to the user
         Label statusLabel = new Label();
         statusLabel.setStyle(
         	    "-fx-font-size: 16px;" +
         	    "-fx-font-weight: bold;"
         	    );
         
+        // List that shows favorite recipes
         ListView<MealBase> favoritesList = new ListView<>(favorites);
+        
+        // List that shows cooked recipes
         ListView<MealBase> cookedList = new ListView<>(cooked);
 
-        
+        // Button that loads a random recipe
         Button randomButton = new Button("Get Random Recipe");
+
+        // Button that shows recipe details only when clicked
         Button detailsButton = new Button("Show Recipe Details"); 
         detailsButton.setPrefWidth(150);
         detailsButton.setPrefHeight(30);
         detailsButton.setStyle("-fx-font-size: 12px; -fx-font-weight: bold;");
 
+        // Buttons for managing lists
         Button addToFavButton = new Button("→ Favorite");
         Button addToCookedFromResultsButton = new Button("→ Cooked");
         Button moveToCookedButton = new Button("→ Cooked");
@@ -64,39 +80,45 @@ public class Main extends Application {
         Button removeFromCookedButton = new Button("Remove Cooked");
         Button moveBackToFavButton = new Button("← Back to Favorites");
 
-                
+        // Text area that shows ingredients and instructions
         TextArea detailsArea = new TextArea();
         detailsArea.setEditable(false);
         detailsArea.setWrapText(true);
         detailsArea.setPrefHeight(400);
         
+        // Label that shows the recipe title
         Label recipeTitle = new Label();
         recipeTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
+        // ImageView that shows the recipe image
         ImageView recipeImage = new ImageView();
         recipeImage.setFitWidth(150);
         recipeImage.setPreserveRatio(true);
-        
-        
 
+        // Action when the Search button is clicked
         searchButton.setOnAction(e -> {
 
+            // Get text from input field
             String ingredient = ingredientField.getText();
 
+            // Check if the input is empty
             if (ingredient == null || ingredient.isBlank()) {
                 statusLabel.setText("Write a cooking material");
                 return;
             }
 
             try {
+                // Create API client
                 MealDbClient client = new MealDbClient(API_VERSION, API_KEY);
 
+                // Search recipes by ingredient
                 MealBase[] meals = client.search(ingredient);
 
+                // Clear previous results and details
                 resultsList.getItems().clear();
                 detailsArea.clear();
 
-
+                // If no recipes are found
                 if (meals == null || meals.length == 0) {
                     statusLabel.setText("No recipes found");
 
@@ -107,17 +129,20 @@ public class Main extends Application {
                     return;
                 }
 
+                // Add results to the list
                 for (MealBase meal : meals) {
                     resultsList.getItems().add(meal);
                 }
 
-                statusLabel.setText( meals.length + " recipes found");
+                // Show number of found recipes
+                statusLabel.setText(meals.length + " recipes found");
 
             } catch (Exception ex) {
                 statusLabel.setText("Error during search");
             }
         });
-                
+
+        // Action for random recipe button
         randomButton.setOnAction(e -> {
             try {
                 MealDbClient client = new MealDbClient(API_VERSION, API_KEY);
@@ -128,16 +153,13 @@ public class Main extends Application {
                     return;
                 }
 
+                // Clear results list
                 resultsList.getItems().clear();
 
+                // Show recipe title, image and details
                 recipeTitle.setText(randomMeal.getStrMeal());
-
-                recipeImage.setImage(
-                    new Image(randomMeal.getStrMealThumb(), true)
-                );
-
+                recipeImage.setImage(new Image(randomMeal.getStrMealThumb(), true));
                 detailsArea.setText(buildMealDetails(randomMeal));
-
 
                 statusLabel.setText("Random recipe");
 
@@ -145,9 +167,11 @@ public class Main extends Application {
                 statusLabel.setText("Error loading random recipe");
             }
         });
-        
+
+        // Action for Show Recipe Details button
         detailsButton.setOnAction(e -> {
 
+            // The selected recipe (from any list)
             MealBase selected = null;
 
             if (resultsList.getSelectionModel().getSelectedItem() != null) {
@@ -174,6 +198,7 @@ public class Main extends Application {
                     return;
                 }
 
+                // Display recipe information
                 recipeTitle.setText(fullMeal.getStrMeal());
                 recipeImage.setImage(new Image(fullMeal.getStrMealThumb(), true));
                 detailsArea.setText(buildMealDetails(fullMeal));
@@ -185,7 +210,7 @@ public class Main extends Application {
             }
         });
 
-        
+        // Add selected result to favorites
         addToFavButton.setOnAction(e -> {
             MealBase selected = resultsList.getSelectionModel().getSelectedItem();
             if (selected == null) {
@@ -197,7 +222,8 @@ public class Main extends Application {
                 statusLabel.setText("Added to Favorites");
             }
         });
-        
+
+        // Add selected result to cooked list
         addToCookedFromResultsButton.setOnAction(e -> {
             MealBase selected = resultsList.getSelectionModel().getSelectedItem();
 
@@ -211,7 +237,8 @@ public class Main extends Application {
                 statusLabel.setText("Moved to Cooked");
             }
         });
-        
+
+        // Move recipe from favorites to cooked
         moveToCookedButton.setOnAction(e -> {
             MealBase selected = favoritesList.getSelectionModel().getSelectedItem();
             if (selected == null) {
@@ -222,7 +249,8 @@ public class Main extends Application {
             cooked.add(selected);
             statusLabel.setText("Marked as Cooked");
         });
-        
+
+        // Remove recipe from favorites
         removeFromFavButton.setOnAction(e -> {
             MealBase selected = favoritesList.getSelectionModel().getSelectedItem();
             if (selected != null) {
@@ -230,7 +258,8 @@ public class Main extends Application {
                 statusLabel.setText("Removed from Favorites");
             }
         });
-        
+
+        // Remove recipe from cooked list
         removeFromCookedButton.setOnAction(e -> {
             MealBase selected = cookedList.getSelectionModel().getSelectedItem();
             if (selected != null) {
@@ -238,7 +267,8 @@ public class Main extends Application {
                 statusLabel.setText("Removed from Cooked");
             }
         });
-        
+
+        // Move recipe from cooked back to favorites
         moveBackToFavButton.setOnAction(e -> {
             MealBase selected = cookedList.getSelectionModel().getSelectedItem();
 
@@ -255,42 +285,40 @@ public class Main extends Application {
 
             statusLabel.setText("Moved back to Favorites");
         }); 
-        
+
+        // Layout containers for UI
         HBox searchButtonsBox = new HBox(10, searchButton, randomButton);
         searchButtonsBox.setAlignment(Pos.CENTER);
-        
-        VBox detailsBox = new VBox(10,
-        	    recipeTitle,
-        	    recipeImage,
-        	    detailsArea
-        	);
-        
+
+        VBox detailsBox = new VBox(10, recipeTitle, recipeImage, detailsArea);
+
         HBox detailsButtonBox = new HBox(detailsButton);
         detailsButtonBox.setAlignment(Pos.CENTER);
 
         VBox searchBox = new VBox(5, new Label("Results"), resultsList, addToFavButton, addToCookedFromResultsButton);
         VBox favBox = new VBox(5, new Label("Favorites"), favoritesList, moveToCookedButton, removeFromFavButton);
-        VBox cookedBox = new VBox(5, new Label("Cooked"), cookedList,  moveBackToFavButton, removeFromCookedButton);
+        VBox cookedBox = new VBox(5, new Label("Cooked"), cookedList, moveBackToFavButton, removeFromCookedButton);
 
         HBox listsBox = new HBox(10, searchBox, favBox, cookedBox);
 
-
-
-
+        // Main layout of the window
         VBox layout = new VBox(10, ingredientField, searchButtonsBox, listsBox, detailsButtonBox, detailsBox, statusLabel);
         layout.setPadding(new Insets(15));
-        
 
+        // Set window properties
         stage.setScene(new Scene(layout, 650, 650));
         stage.setTitle("MealLab App");
+
+        // Save data when the app closes
         stage.setOnCloseRequest(e -> {
             saveFavorites();
             saveCooked();
         });
+
         stage.show();
     }
-    
-    
+
+    // Builds the full recipe text (ingredients + instructions)
     private String buildMealDetails(Meal meal) {
         StringBuilder sb = new StringBuilder();
 
@@ -323,6 +351,7 @@ public class Main extends Application {
         return sb.toString();
     }
 
+    // Helper method that adds one ingredient line
     private void addIngredient(StringBuilder sb, String ingredient, String measure) {
         if (ingredient == null || ingredient.isBlank()) return;
 
@@ -332,7 +361,8 @@ public class Main extends Application {
         }
         sb.append(ingredient).append("\n");
     }
-    
+
+    // Save favorites list to JSON file
     private void saveFavorites() {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -343,6 +373,7 @@ public class Main extends Application {
         }
     }
 
+    // Save cooked list to JSON file
     private void saveCooked() {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -352,7 +383,8 @@ public class Main extends Application {
             System.out.println("Error saving cooked.json");
         }
     }
-    
+
+    // Load favorites from JSON file
     private ObservableList<MealBase> loadFavorites() {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -371,6 +403,7 @@ public class Main extends Application {
         }
     }
 
+    // Load cooked recipes from JSON file
     private ObservableList<MealBase> loadCooked() {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -389,9 +422,7 @@ public class Main extends Application {
         }
     }
 
-
-
-
+    // Main method that launches the JavaFX app
     public static void main(String[] args) {
         launch();
     }
