@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import unipi.meallab.api.Meal;
+import unipi.meallab.api.MealBase;
+import unipi.meallab.api.MealDbClient;
+
 public class MealDbClientTests {
 	
 	@Test
