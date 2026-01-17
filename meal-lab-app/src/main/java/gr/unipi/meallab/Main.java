@@ -63,6 +63,29 @@ public class Main extends Application {
         // List that shows cooked recipes
         ListView<MealBase> cookedList = new ListView<>(cooked);
 
+
+        // When clicking on search results, clear selection from Favorites and Cooked lists
+        // so that only one recipe is selected at a time
+        resultsList.setOnMouseClicked(e -> {
+            favoritesList.getSelectionModel().clearSelection();
+            cookedList.getSelectionModel().clearSelection();
+        });
+        
+        // When clicking on Favorites list, clear selection from Results and Cooked lists
+        // to avoid multiple recipes being selected at the same time
+        favoritesList.setOnMouseClicked(e -> {
+            resultsList.getSelectionModel().clearSelection();
+            cookedList.getSelectionModel().clearSelection();
+        });
+        
+        // When clicking on Cooked list, clear selection from Results and Favorites lists
+        // ensuring that details are shown for only one selected recipe
+        cookedList.setOnMouseClicked(e -> {
+            resultsList.getSelectionModel().clearSelection();
+            favoritesList.getSelectionModel().clearSelection();
+        });
+
+
         // Button that loads a random recipe
         Button randomButton = new Button("Get Random Recipe");
 
