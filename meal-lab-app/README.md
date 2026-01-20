@@ -1,1 +1,0 @@
-MealLab JavaFX Application
