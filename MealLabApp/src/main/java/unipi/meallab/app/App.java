@@ -242,10 +242,13 @@ public class App extends Application {
                 statusLabel.setText("Select a recipe first");
                 return;
             }
-            if (!favorites.contains(selected)) {
+            if (!containsById(favorites, selected)) {
                 favorites.add(selected);
                 statusLabel.setText("Added to Favorites");
+            } else {
+                statusLabel.setText("Already in Favorites");
             }
+
         });
 
         // Add selected result to cooked list
@@ -257,10 +260,13 @@ public class App extends Application {
                 return;
             }
 
-            if (!cooked.contains(selected)) {
+            if (!containsById(cooked, selected)) {
                 cooked.add(selected);
                 statusLabel.setText("Moved to Cooked");
+            } else {
+                statusLabel.setText("Already in Cooked");
             }
+
         });
 
         // Move recipe from favorites to cooked
@@ -271,8 +277,12 @@ public class App extends Application {
                 return;
             }
             favorites.remove(selected);
-            cooked.add(selected);
+            
+            if (!containsById(cooked, selected)) {
+                cooked.add(selected);
+            }            
             statusLabel.setText("Marked as Cooked");
+
         });
 
         // Remove recipe from favorites
@@ -303,8 +313,8 @@ public class App extends Application {
             }
 
             cooked.remove(selected);
-
-            if (!favorites.contains(selected)) {
+            
+            if (!containsById(favorites, selected)) {
                 favorites.add(selected);
             }
 
@@ -427,6 +437,16 @@ public class App extends Application {
             return FXCollections.observableArrayList();
         }
     }
+
+    // Checks if a list already contains a recipe with the same idMeal
+    private boolean containsById(ObservableList<MealBase> list, MealBase meal) {
+        for (MealBase m : list) {
+            if (m.getIdMeal().equals(meal.getIdMeal())) {
+                return true;
+            }
+        }
+        return false;
+    }    
 
     // Load cooked recipes from JSON file
     private ObservableList<MealBase> loadCooked() {
